@@ -16,7 +16,7 @@ gene_trans = bitr(gene,
                 OrgDb="org.Hs.eg.db") 
 #head(gene_trans)
 
-#使用函数enrichGO进行GO富集,"BP"指的是“Biological Process”，“MF”指的是“Molecular Function”，“CC”指的是“Cellular Component”
+#使用函数enrichGO进行GO富集,ont="BP"指的是“Biological Process”，“MF”指的是“Molecular Function”，“CC”指的是“Cellular Component”
 go_test=enrichGO(as.vector(as.matrix(gene_trans["ENTREZID"])),
                  OrgDb=org.Hs.eg.db,
                  ont="BP",
