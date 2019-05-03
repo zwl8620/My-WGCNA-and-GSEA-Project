@@ -1,7 +1,7 @@
 #在进行富集之前必须搞清楚数据是来自哪个物种，不同物种有不同的基因注释库
 library(org.Hs.eg.db) 
 library(clusterProfiler)
-library("pathview")
+library(pathview)
 
 #读取和整理基因ID
 gene_symbol=read.table("test0.txt")
