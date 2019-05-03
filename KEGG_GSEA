@@ -1,0 +1,45 @@
+#在进行富集之前必须搞清楚数据是来自哪个物种，不同物种有不同的基因注释库
+library(org.Hs.eg.db) 
+library(clusterProfiler)
+library("pathview")
+
+#读取和整理基因ID
+gene_symbol=read.table("test0.txt")
+gene = as.vector(as.matrix(gene_symbol["V1"]))
+gene <- unique(gene) #去掉NA值
+
+#KEGG富集基因ID转换
+gene_trans_kegg = bitr(gene, 
+        fromType="SYMBOL",
+        toType="UNIPROT", 
+        OrgDb="org.Hs.eg.db")
+
+#KEGG富集
+gene_kegg=enrichKEGG(
+        as.vector(as.matrix(gene_trans_kegg$UNIPROT)),
+        organism = "hsa",
+        pAdjustMethod="BH",
+        pvalueCutoff=0.05,
+        qvalueCutoff=0.05,
+        minGSSize=1,
+        keyType="uniprot",
+        use_internal_data = FALSE)
+write.table(gene_kegg,sep="\t","kegg_result.xls")
+head(gene_kegg) #查看基因都富集到了那些代谢通路
+
+#绘制气泡图
+pdf("kegg_dot.pdf")
+dotplot(gene_kegg)
+dev.off()
+
+#KEGG富集结果可视化
+#“hsa04110”是富集得到的通路中感兴趣的其中一条
+pathview(
+    as.vector(as.matrix(gene_trans_kegg$UNIPROT)),
+    pathway.id = "hsa04110",
+    species="hsa")    
+# 下载代谢通路图片
+download.kegg(pathway.id = "04110", 
+            species = "hsa", 
+            kegg.dir = ".",
+            file.type=c("xml", "png"))
